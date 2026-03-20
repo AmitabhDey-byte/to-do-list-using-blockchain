@@ -115,14 +115,7 @@ button {
 }
 
 /* 🏷️ Title */
-.title {
-  text-align: center;
-  font-size: 28px;
-  margin-bottom: 5px;
-  background: linear-gradient(90deg, #00f5ff, #9d4edd);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+
 
 /* 🧾 Subtitle */
 .subtitle {
