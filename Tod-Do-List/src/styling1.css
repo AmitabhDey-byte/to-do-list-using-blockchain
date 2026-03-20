@@ -1,0 +1,87 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* BACKGROUND */
+.bg-fixed {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+}
+
+/* FORCE FULL SCREEN */
+.bg-fixed > div {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* CONTENT */
+.content {
+  position: relative;
+  z-index: 1;
+
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+  text-align: center;
+}
+
+/* UI */
+.title {
+  font-size: 2.5rem;
+}
+
+.subtitle {
+  opacity: 0.7;
+  margin-bottom: 20px;
+}
+
+.todo-box {
+  width: 360px;
+  padding: 20px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.1);
+  backdrop-filter: blur(12px);
+}
+
+/* INPUT */
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+button {
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #3b82f6;
+  color: white;
+}
+
+/* TASK */
+.task {
+  padding: 8px;
+  margin-top: 5px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.completed {
+  text-decoration: line-through;
+  opacity: 0.5;
+}
