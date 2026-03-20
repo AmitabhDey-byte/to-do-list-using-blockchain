@@ -4,22 +4,30 @@ import {
   Networks,
   BASE_FEE,
   Contract,
-  Address,
   nativeToScVal,
   scValToNative,
 } from "@stellar/stellar-sdk";
 
 import { connectWallet, signTx } from "./freighter";
 
-const contractId = "CCLOGIBS3JGU5HQ2J3HCH2B4QPMKKFOTRBMW25SZS65O7JE3NPHQO5RW"; // 🔴 replace
-const server = new StellarRpc.Server("https://soroban-testnet.stellar.org");
+const contractId =
+  "CCLOGIBS3JGU5HQ2J3HCH2B4QPMKKFOTRBMW25SZS65O7JE3NPHQO5RW";
+
+const server = new StellarRpc.Server(
+  "https://soroban-testnet.stellar.org"
+);
+
+// 🔥 cache wallet (no repeated popups)
+let cachedUser = null;
 
 export async function getUser() {
-  return await connectWallet();
+  if (cachedUser) return cachedUser;
+  cachedUser = await connectWallet();
+  return cachedUser;
 }
 
-// 🚀 send tx
-async function sendTx(method, args) {
+// 🚀 Send transaction
+async function sendTx(method, args = []) {
   const user = await getUser();
   const account = await server.getAccount(user);
   const contract = new Contract(contractId);
@@ -41,27 +49,21 @@ async function sendTx(method, args) {
   );
 }
 
-// ➕ CREATE
+// ➕ ADD TASK (matches Rust: add_task(env, task))
 export async function createTask(content) {
-  const user = await getUser();
-
-  return sendTx("create_task", [
-    Address.fromString(user).toScVal(),
-    nativeToScVal(content),
+  return sendTx("add_task", [
+    nativeToScVal(String(content), { type: "string" }),
   ]);
 }
 
-// 🔁 TOGGLE
+// 🔁 COMPLETE TASK (matches Rust: complete_task(env, index))
 export async function toggleTask(index) {
-  const user = await getUser();
-
-  return sendTx("toggle_task", [
-    Address.fromString(user).toScVal(),
-    nativeToScVal(index, { type: "u32" }),
+  return sendTx("complete_task", [
+    nativeToScVal(Number(index), { type: "u32" }),
   ]);
 }
 
-// 📥 GET (FIXED DECODING)
+// 📥 GET TASKS (matches Rust: get_tasks(env))
 export async function getTasks() {
   const user = await getUser();
   const contract = new Contract(contractId);
@@ -71,12 +73,7 @@ export async function getTasks() {
     fee: BASE_FEE,
     networkPassphrase: Networks.TESTNET,
   })
-    .addOperation(
-      contract.call(
-        "get_tasks",
-        Address.fromString(user).toScVal()
-      )
-    )
+    .addOperation(contract.call("get_tasks"))
     .setTimeout(30)
     .build();
 
@@ -88,9 +85,9 @@ export async function getTasks() {
 
   console.log("DECODED:", decoded);
 
+  // 🔥 Convert [(string, bool)] → JS objects
   return decoded.map((item) => ({
-    content: item.content || item[0] || "",
-    completed: item.completed ?? item[1] ?? false,
-    timestamp: Number(item.timestamp ?? item[2] ?? 0),
+    content: item?.[0] ?? "",
+    completed: item?.[1] ?? false,
   }));
 }

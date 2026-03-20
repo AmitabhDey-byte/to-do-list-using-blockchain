@@ -85,3 +85,141 @@ button {
   text-decoration: line-through;
   opacity: 0.5;
 }
+
+/* 🌌 Global reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+/* 🌍 App wrapper */
+.app {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* 🧊 Glass container */
+.container {
+  width: 400px;
+  padding: 25px;
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 40px rgba(0, 0, 0, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+}
+
+/* 🏷️ Title */
+.title {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 5px;
+  background: linear-gradient(90deg, #00f5ff, #9d4edd);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* 🧾 Subtitle */
+.subtitle {
+  text-align: center;
+  font-size: 14px;
+  margin-bottom: 20px;
+  opacity: 0.7;
+}
+
+/* ⌨️ Input section */
+.input-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.input-group input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+}
+
+.input-group input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ➕ Button */
+.input-group button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #00f5ff, #9d4edd);
+  color: white;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.input-group button:hover {
+  transform: scale(1.05);
+  opacity: 0.9;
+}
+
+/* 📊 Stats */
+.stats {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 15px;
+  opacity: 0.8;
+}
+
+/* 📋 Task list */
+.task-list {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+/* 📌 Task item */
+.task {
+  padding: 12px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.07);
+  transition: 0.3s ease;
+}
+
+.task:hover {
+  background: rgba(255, 255, 255, 0.12);
+  transform: translateY(-2px);
+}
+
+/* ✅ Completed task */
+.task.completed {
+  text-decoration: line-through;
+  opacity: 0.5;
+  background: rgba(0, 255, 150, 0.1);
+}
+
+/* 🚫 Empty / loading text */
+.empty {
+  text-align: center;
+  opacity: 0.6;
+  font-size: 14px;
+  margin-top: 10px;
+}
+
+/* 🌀 Scrollbar styling */
+.task-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.task-list::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 10px;
+}

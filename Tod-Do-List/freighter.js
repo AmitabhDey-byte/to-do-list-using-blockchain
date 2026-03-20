@@ -1,21 +1,26 @@
 import { requestAccess, signTransaction } from "@stellar/freighter-api";
 
+// 🔌 Connect wallet (always return string)
 export async function connectWallet() {
   try {
-    const publicKey = await requestAccess();
-    return publicKey;
+    const result = await requestAccess();
+
+    if (typeof result === "string") return result;
+    if (result?.address) return result.address;
+
+    throw new Error("Invalid wallet response");
   } catch (e) {
     console.error("Connection error:", e);
     throw e;
   }
 }
 
+// ✍️ Sign transaction
 export async function signTx(xdr, networkPassphrase) {
   try {
-    const signed = await signTransaction(xdr, {
+    return await signTransaction(xdr, {
       network: networkPassphrase,
     });
-    return signed;
   } catch (e) {
     console.error("Sign error:", e);
     throw e;

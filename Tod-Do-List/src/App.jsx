@@ -14,50 +14,65 @@ export default function TodoApp() {
   const [loading, setLoading] = useState(false);
 
   // 📥 Load tasks
-  const loadTasks = async () => {
-    try {
-      setLoading(true);
-      const data = await getTasks();
-      setTasks(data);
-    } catch (err) {
-      console.error("Load error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+const loadTasks = async () => {
+  try {
+    setLoading(true);
+    const data = await getTasks();
 
+    // 🔥 Transform blockchain data → UI format
+    const formatted = data.map((t) => ({
+      content: t.content ?? t[0],
+      completed: t.completed ?? t[1],
+    }));
+
+    setTasks(formatted);
+  } catch (err) {
+    console.error("Load error:", err);
+  } finally {
+    setLoading(false);
+  }
+};
   useEffect(() => {
     loadTasks();
   }, []);
 
   // ➕ Add task
-  const handleAdd = async () => {
-    if (!input.trim()) return;
+const handleAdd = async () => {
+  if (!input.trim()) return;
 
-    try {
-      setLoading(true);
-      await createTask(input);
-      setInput("");
-      await loadTasks();
-    } catch (err) {
-      console.error("Create error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+
+    await createTask(input);
+    setInput("");
+
+    // ⏳ wait for blockchain confirmation
+    await new Promise((res) => setTimeout(res, 2000));
+
+    await loadTasks();
+  } catch (err) {
+    console.error("Create error:", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   // 🔁 Toggle task
   const handleToggle = async (index) => {
-    try {
-      setLoading(true);
-      await toggleTaskOnChain(index);
-      await loadTasks();
-    } catch (err) {
-      console.error("Toggle error:", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    setLoading(true);
+
+    await toggleTask(index);
+
+    await new Promise((res) => setTimeout(res, 1500));
+
+    await loadTasks();
+  } catch (err) {
+    console.error("Toggle error:", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const total = tasks.length;
   const done = tasks.filter((t) => t.completed).length;
