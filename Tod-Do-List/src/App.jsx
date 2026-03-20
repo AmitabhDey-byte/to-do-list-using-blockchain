@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
 import "./styling1.css";
+import Background from "./Background";
 
 import {
   createTask,
   toggleTask as toggleTaskOnChain,
   getTasks,
-} from "../soroban";
+} from "../soroban.js";
 
 export default function TodoApp() {
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // 📥 Load tasks from blockchain
+  // 📥 Load tasks
   const loadTasks = async () => {
     try {
       setLoading(true);
@@ -29,13 +30,13 @@ export default function TodoApp() {
     loadTasks();
   }, []);
 
-  // ➕ Add Task (ON-CHAIN)
+  // ➕ Add task
   const handleAdd = async () => {
     if (!input.trim()) return;
 
     try {
       setLoading(true);
-      await createTask(input); // 🔥 blockchain call
+      await createTask(input);
       setInput("");
       await loadTasks();
     } catch (err) {
@@ -45,11 +46,11 @@ export default function TodoApp() {
     }
   };
 
-  // 🔁 Toggle Task (ON-CHAIN)
+  // 🔁 Toggle task
   const handleToggle = async (index) => {
     try {
       setLoading(true);
-      await toggleTaskOnChain(index); // 🔥 blockchain call
+      await toggleTaskOnChain(index);
       await loadTasks();
     } catch (err) {
       console.error("Toggle error:", err);
@@ -62,52 +63,58 @@ export default function TodoApp() {
   const done = tasks.filter((t) => t.completed).length;
 
   return (
-    <div className="app">
-      <div className="container">
-        <h1 className="title">On-Chain ToDo</h1>
-        <p className="subtitle">
-          Permissionless productivity powered by blockchain
-        </p>
+    <>
+      {/* 🌌 BACKGROUND */}
+      <Background />
 
-        {/* INPUT */}
-        <div className="input-group">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="What needs to be done?"
-            disabled={loading}
-          />
-          <button onClick={handleAdd} disabled={loading}>
-            {loading ? "..." : "Add"}
-          </button>
-        </div>
+      {/* 🧊 CONTENT */}
+      <div className="app">
+        <div className="container">
+          <h1 className="title">On-Chain ToDo</h1>
+          <p className="subtitle">
+            Permissionless productivity powered by blockchain
+          </p>
 
-        {/* STATS */}
-        <div className="stats">
-          <span>{done} completed</span>
-          <span>{total} total</span>
-        </div>
+          {/* INPUT */}
+          <div className="input-group">
+            <input
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="What needs to be done?"
+              disabled={loading}
+            />
+            <button onClick={handleAdd} disabled={loading}>
+              {loading ? "..." : "Add"}
+            </button>
+          </div>
 
-        {/* TASK LIST */}
-        <div className="task-list">
-          {loading && <p className="empty">Loading...</p>}
+          {/* STATS */}
+          <div className="stats">
+            <span>{done} completed</span>
+            <span>{total} total</span>
+          </div>
 
-          {!loading && tasks.length === 0 && (
-            <p className="empty">No tasks yet 🚀</p>
-          )}
+          {/* TASK LIST */}
+          <div className="task-list">
+            {loading && <p className="empty">Loading...</p>}
 
-          {!loading &&
-            tasks.map((task, index) => (
-              <div
-                key={index}
-                className={`task ${task.completed ? "completed" : ""}`}
-                onClick={() => handleToggle(index)}
-              >
-                {task.content}
-              </div>
-            ))}
+            {!loading && tasks.length === 0 && (
+              <p className="empty">No tasks yet 🚀</p>
+            )}
+
+            {!loading &&
+              tasks.map((task, index) => (
+                <div
+                  key={index}
+                  className={`task ${task.completed ? "completed" : ""}`}
+                  onClick={() => handleToggle(index)}
+                >
+                  {task.content}
+                </div>
+              ))}
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

@@ -6,20 +6,16 @@ import {
   Contract,
   Address,
   nativeToScVal,
-  scValToNative
+  scValToNative,
 } from "@stellar/stellar-sdk";
 
-const contractId = "YOUR_CONTRACT_ID";
+import { connectWallet, signTx } from "./freighter";
+
+const contractId = "CCLOGIBS3JGU5HQ2J3HCH2B4QPMKKFOTRBMW25SZS65O7JE3NPHQO5RW"; // 🔴 replace
 const server = new StellarRpc.Server("https://soroban-testnet.stellar.org");
 
-// 🔐 get wallet
 export async function getUser() {
-  if (!window.freighter) {
-    alert("Install Freighter");
-    throw new Error("Freighter not found");
-  }
-
-  return await window.freighter.getPublicKey();
+  return await connectWallet();
 }
 
 // 🚀 send tx
@@ -30,7 +26,7 @@ async function sendTx(method, args) {
 
   const tx = new TransactionBuilder(account, {
     fee: BASE_FEE,
-    networkPassphrase: Networks.TESTNET
+    networkPassphrase: Networks.TESTNET,
   })
     .addOperation(contract.call(method, ...args))
     .setTimeout(30)
@@ -38,45 +34,34 @@ async function sendTx(method, args) {
 
   const prepared = await server.prepareTransaction(tx);
 
-  console.log("Prepared TX:", prepared);
-
-  const signed = await window.freighter.signTransaction(
-    prepared.toXDR(),
-    Networks.TESTNET
-  );
+  const signedXDR = await signTx(prepared.toXDR(), Networks.TESTNET);
 
   return await server.sendTransaction(
-    TransactionBuilder.fromXDR(signed, Networks.TESTNET)
+    TransactionBuilder.fromXDR(signedXDR, Networks.TESTNET)
   );
 }
 
-//
-// ➕ CREATE TASK
-//
+// ➕ CREATE
 export async function createTask(content) {
   const user = await getUser();
 
   return sendTx("create_task", [
-    Address.fromString(user).toScVal(),        // ✅ FIXED
-    nativeToScVal(content)                     // ✅ FIXED
+    Address.fromString(user).toScVal(),
+    nativeToScVal(content),
   ]);
 }
 
-//
-// 🔁 TOGGLE TASK
-//
+// 🔁 TOGGLE
 export async function toggleTask(index) {
   const user = await getUser();
 
   return sendTx("toggle_task", [
-    Address.fromString(user).toScVal(),        // ✅ FIXED
-    nativeToScVal(index, { type: "u32" })      // ✅ FIXED
+    Address.fromString(user).toScVal(),
+    nativeToScVal(index, { type: "u32" }),
   ]);
 }
 
-//
-// 📥 GET TASKS
-//
+// 📥 GET (FIXED DECODING)
 export async function getTasks() {
   const user = await getUser();
   const contract = new Contract(contractId);
@@ -84,12 +69,12 @@ export async function getTasks() {
 
   const tx = new TransactionBuilder(account, {
     fee: BASE_FEE,
-    networkPassphrase: Networks.TESTNET
+    networkPassphrase: Networks.TESTNET,
   })
     .addOperation(
       contract.call(
         "get_tasks",
-        Address.fromString(user).toScVal() // ✅ FIXED
+        Address.fromString(user).toScVal()
       )
     )
     .setTimeout(30)
@@ -97,15 +82,15 @@ export async function getTasks() {
 
   const result = await server.simulateTransaction(tx);
 
-  console.log("RAW RESULT:", result);
-
   if (!result.result?.retval) return [];
 
   const decoded = scValToNative(result.result.retval);
 
-  return decoded.map((t) => ({
-    content: t.content,
-    completed: t.completed,
-    timestamp: Number(t.timestamp)
+  console.log("DECODED:", decoded);
+
+  return decoded.map((item) => ({
+    content: item.content || item[0] || "",
+    completed: item.completed ?? item[1] ?? false,
+    timestamp: Number(item.timestamp ?? item[2] ?? 0),
   }));
 }
