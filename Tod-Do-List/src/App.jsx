@@ -1,135 +1,159 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { getUser, createTask, getTasks, toggleTask } from "../soroban";
 import "./styling1.css";
-import Background from "./Background";
 
-import {
-  createTask,
-  toggleTask as toggleTaskOnChain,
-  getTasks,
-} from "../soroban.js";
-
-export default function TodoApp() {
+export default function App() {
+  const [wallet, setWallet] = useState("");
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const inputRef = useRef(null);
 
-  // 📥 Load tasks
-const loadTasks = async () => {
-  try {
-    setLoading(true);
+  const connect = async () => {
+    const user = await getUser();
+    setWallet(user);
+    load();
+  };
+
+  const load = async () => {
     const data = await getTasks();
+    setTasks(data);
+  };
 
-    // 🔥 Transform blockchain data → UI format
-    const formatted = data.map((t) => ({
-      content: t.content ?? t[0],
-      completed: t.completed ?? t[1],
-    }));
-
-    setTasks(formatted);
-  } catch (err) {
-    console.error("Load error:", err);
-  } finally {
+  const add = async () => {
+    if (!input.trim()) return;
+    setLoading(true);
+    await createTask(input.trim());
+    await new Promise((r) => setTimeout(r, 1500));
+    setInput("");
+    await load();
     setLoading(false);
-  }
-};
+    inputRef.current?.focus();
+  };
+
+  const complete = async (i) => {
+    setLoading(true);
+    await toggleTask(i);
+    await new Promise((r) => setTimeout(r, 1500));
+    await load();
+    setLoading(false);
+  };
+
+  const handleKey = (e) => {
+    if (e.key === "Enter") add();
+  };
+
   useEffect(() => {
-    loadTasks();
+    connect();
   }, []);
 
-  // ➕ Add task
-const handleAdd = async () => {
-  if (!input.trim()) return;
-
-  try {
-    setLoading(true);
-
-    await createTask(input);
-    setInput("");
-
-    // ⏳ wait for blockchain confirmation
-    await new Promise((res) => setTimeout(res, 2000));
-
-    await loadTasks();
-  } catch (err) {
-    console.error("Create error:", err);
-  } finally {
-    setLoading(false);
-  }
-};
-
-  // 🔁 Toggle task
-  const handleToggle = async (index) => {
-  try {
-    setLoading(true);
-
-    await toggleTask(index);
-
-    await new Promise((res) => setTimeout(res, 1500));
-
-    await loadTasks();
-  } catch (err) {
-    console.error("Toggle error:", err);
-  } finally {
-    setLoading(false);
-  }
-};
-
-  const total = tasks.length;
+  const pending = tasks.filter((t) => !t.completed).length;
   const done = tasks.filter((t) => t.completed).length;
 
+  const shortWallet = wallet
+    ? `${wallet.slice(0, 6)}...${wallet.slice(-6)}`
+    : null;
+
   return (
-    <>
-      {/* 🌌 BACKGROUND */}
-      <Background />
+    <div className="app-wrap">
+      <div className="orb" />
+      <div className="container">
 
-      {/* 🧊 CONTENT */}
-      <div className="app">
-        <div className="container">
-          <h1 className="title">On-Chain ToDo</h1>
-          <p className="subtitle">
-            Permissionless productivity powered by blockchain
-          </p>
+        {/* Header */}
+        <div className="header">
+          <div className="logo-row">
+            <div className="logo-mark">✦</div>
+            <h1>Stellar <span>Todo</span></h1>
+          </div>
+          <p className="tagline">On-chain task management · Testnet</p>
+          <div className={`wallet-chip ${wallet ? "connected" : ""}`}>
+            <div className="wallet-dot" />
+            <span className="wallet-addr">
+              {wallet ? shortWallet : "Connecting wallet..."}
+            </span>
+          </div>
+        </div>
 
-          {/* INPUT */}
-          <div className="input-group">
+        {/* Input */}
+        <div className="input-section">
+          <span className="input-label">New Task</span>
+          <div className="input-row">
             <input
+              ref={inputRef}
+              className="task-input"
               value={input}
               onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKey}
               placeholder="What needs to be done?"
               disabled={loading}
             />
-            <button onClick={handleAdd} disabled={loading}>
-              {loading ? "..." : "Add"}
+            <button
+              className="add-btn"
+              onClick={add}
+              disabled={loading || !input.trim()}
+            >
+              Deploy
             </button>
           </div>
-
-          {/* STATS */}
-          <div className="stats">
-            <span>{done} completed</span>
-            <span>{total} total</span>
-          </div>
-
-          {/* TASK LIST */}
-          <div className="task-list">
-            {loading && <p className="empty">Loading...</p>}
-
-            {!loading && tasks.length === 0 && (
-              <p className="empty">No tasks yet 🚀</p>
-            )}
-
-            {!loading &&
-              tasks.map((task, index) => (
-                <div
-                  key={index}
-                  className={`task ${task.completed ? "completed" : ""}`}
-                  onClick={() => handleToggle(index)}
-                >
-                  {task.content}
-                </div>
-              ))}
-          </div>
         </div>
+
+        {/* Status */}
+        {loading && (
+          <div className="status-bar">
+            <div className="spinner" />
+            Broadcasting to Stellar network...
+          </div>
+        )}
+
+        {/* Task list */}
+        {tasks.length > 0 && (
+          <div className="section-header">
+            <span className="section-title">Tasks</span>
+            <span className="task-count">
+              {pending} pending · {done} done
+            </span>
+          </div>
+        )}
+
+        {tasks.length === 0 && !loading ? (
+          <div className="empty">
+            <div className="empty-icon">◎</div>
+            <p>No tasks on-chain yet.<br />Deploy your first one above.</p>
+          </div>
+        ) : (
+          <ul className="task-list">
+            {tasks.map((t, i) => (
+              <li
+                key={i}
+                className={`task-item${t.completed ? " done" : ""}`}
+                style={{ animationDelay: `${i * 40}ms` }}
+              >
+                <span className="task-index">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+                <span className="task-text">{t.content}</span>
+                {t.completed ? (
+                  <span className="done-badge">✓ done</span>
+                ) : (
+                  <button
+                    className="complete-btn"
+                    onClick={() => complete(i)}
+                    disabled={loading}
+                    title="Mark complete"
+                  >
+                    ✓
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
+        )}
+
+        <div className="footer">
+          <p>Powered by Soroban smart contracts · {new Date().getFullYear()}</p>
+        </div>
+
       </div>
-    </>
+    </div>
   );
 }
