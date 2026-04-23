@@ -63,9 +63,9 @@ export default function App() {
         <div className="header">
           <div className="logo-row">
             <div className="logo-mark">✦</div>
-            <h1>Stellar <span>Todo</span></h1>
+            <h1>Task <span>Forge</span></h1>
           </div>
-          <p className="tagline">On-chain task management · Testnet</p>
+          <p className="tagline">Decentralized task management · Soroban</p>
           <div className={`wallet-chip ${wallet ? "connected" : ""}`}>
             <div className="wallet-dot" />
             <span className="wallet-addr">
@@ -92,7 +92,7 @@ export default function App() {
               onClick={add}
               disabled={loading || !input.trim()}
             >
-              Deploy
+              Create
             </button>
           </div>
         </div>
@@ -101,7 +101,7 @@ export default function App() {
         {loading && (
           <div className="status-bar">
             <div className="spinner" />
-            Broadcasting to Stellar network...
+            Syncing to blockchain...
           </div>
         )}
 
@@ -118,7 +118,7 @@ export default function App() {
         {tasks.length === 0 && !loading ? (
           <div className="empty">
             <div className="empty-icon">◎</div>
-            <p>No tasks on-chain yet.<br />Deploy your first one above.</p>
+            <p>No tasks yet.<br />Create your first one above.</p>
           </div>
         ) : (
           <ul className="task-list">
