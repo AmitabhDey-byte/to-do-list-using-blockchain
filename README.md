@@ -2,7 +2,17 @@ the demo video link
 
 https://drive.google.com/file/d/1IQYeF-1KaYrD2P3mH4W4Bw5YP8j6TYhW/view?usp=sharing
 
-<img width="1918" height="1078" alt="image" src="https://github.com/user-attachments/assets/ddce3abe-6d69-4bb4-b279-0f21976f0703" />
+## 🔗 Deployed Smart Contract
+
+**Contract Address:**
+
+```
+CAZQ35K7MHUJJ3DDF5UIRYIW55A37JAXG4TMQ5YBNXW4DZ3DGZNVHQAS
+```
+
+---
+
+<img width="1917" height="947" alt="image" src="https://github.com/user-attachments/assets/2ef35554-a027-4e72-b881-5382bc7de3fa" />
 
 <img width="1918" height="857" alt="image" src="https://github.com/user-attachments/assets/3bde0e1e-30b9-4f52-8344-97a20ec379b9" />
 
@@ -29,15 +39,6 @@ All without any admin or backend.
 
 ---
 
-## 🔗 Deployed Smart Contract
-
-**Contract Address:**
-
-```
-CAZQ35K7MHUJJ3DDF5UIRYIW55A37JAXG4TMQ5YBNXW4DZ3DGZNVHQAS
-```
-
----
 
 ## ⚙️ Tech Stack
 
