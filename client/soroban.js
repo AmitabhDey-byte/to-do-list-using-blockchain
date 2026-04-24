@@ -13,7 +13,7 @@ import { connectWallet, signTx } from "./freighter";
 const NETWORK_PASSPHRASE = Networks.TESTNET;
 
 const contractId =
-  "CCLOGIBS3JGU5HQ2J3HCH2B4QPMKKFOTRBMW25SZS65O7JE3NPHQO5RW";
+  "CAZQ35K7MHUJJ3DDF5UIRYIW55A37JAXG4TMQ5YBNXW4DZ3DGZNVHQAS";
 
 const server = new StellarRpc.Server(
   "https://soroban-testnet.stellar.org"
