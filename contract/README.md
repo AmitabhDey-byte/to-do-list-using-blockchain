@@ -1,49 +1,194 @@
-# 📝 To-Do List on Blockchain (Soroban Smart Contract)
+the demo video link
 
-## 📌 Project Description
-This project is a decentralized To-Do List application built using Soroban smart contracts on the Stellar blockchain.
+https://drive.google.com/file/d/1IQYeF-1KaYrD2P3mH4W4Bw5YP8j6TYhW/view?usp=sharing
 
-The goal of this project is to demonstrate how everyday applications like task management can be transformed into decentralized systems where data is transparent, tamper-proof, and permanently stored on-chain.
+## 🔗 Deployed Smart Contract
+
+**Contract Address:**
+
+```
+CAZQ35K7MHUJJ3DDF5UIRYIW55A37JAXG4TMQ5YBNXW4DZ3DGZNVHQAS
+```
 
 ---
 
-## ⚙️ What it does
-This smart contract allows users to:
-- Add tasks to a blockchain-based to-do list
-- View all stored tasks
-- Mark tasks as completed
+<img width="1917" height="947" alt="image" src="https://github.com/user-attachments/assets/2ef35554-a027-4e72-b881-5382bc7de3fa" />
 
-All data is stored on-chain, ensuring immutability and transparency.
+<img width="1918" height="857" alt="image" src="https://github.com/user-attachments/assets/3bde0e1e-30b9-4f52-8344-97a20ec379b9" />
+
+
+
+# 📝 On-Chain ToDo DApp (Stellar Soroban)
+
+A **fully permissionless ToDo List DApp** built on the Stellar network using Soroban smart contracts.
+No accounts, no centralized control — just pure on-chain productivity 🚀
+
+---
+
+## 🌐 Live Concept
+
+> “Write your tasks once. Store them forever.”
+
+This app lets anyone:
+
+* Create tasks
+* Toggle completion status
+* Retrieve tasks directly from the blockchain
+
+All without any admin or backend.
+
+---
+
+
+## ⚙️ Tech Stack
+
+* **Frontend:** React (Vite)
+* **Blockchain:** Stellar Soroban
+* **Wallet:** Freighter
+* **SDKs:**
+
+  * @stellar/stellar-sdk
+  * @stellar/freighter-api
 
 ---
 
 ## ✨ Features
-- 🧾 Add tasks to blockchain storage
-- 📋 Retrieve all tasks anytime
-- ✅ Mark tasks as completed
-- 🔐 Tamper-proof and decentralized
-- ⚡ Built on Soroban for fast and efficient execution
-- 🧩 Easily extendable for advanced features
+
+* 🔓 **Permissionless by Design**
+  No admin functions. Any user can interact freely.
+
+* ⛓️ **Fully On-Chain Storage**
+  Tasks are stored on the blockchain, not locally.
+
+* 🔐 **Wallet-Based Authentication**
+  Uses Freighter wallet for signing transactions.
+
+* ⚡ **Real-Time Updates**
+  UI updates after every blockchain interaction.
+
+* 🧊 **Modern UI + Animated Background**
+  Clean, responsive interface with immersive visuals.
 
 ---
 
-## 🔗 Deployed Smart Contract Link
-To-Do List on Blockchain
+## 🧠 Smart Contract Overview
+
+### Data Structure
+
+```rust
+struct Task {
+    content: String,
+    completed: bool,
+    timestamp: u64,
+}
+```
+
+### Functions
+
+* `create_task(user, content)`
+  → Adds a new task
+
+* `toggle_task(user, index)`
+  → Toggles completion status
+
+* `get_tasks(user)`
+  → Returns all tasks for a user
 
 ---
 
-## 🛠️ Tech Stack
-- Rust
-- Soroban SDK
-- Stellar Blockchain
+## 🚀 Getting Started
 
----
+### 1. Clone the repo
 
-## 🚀 How to Run Locally
-
-### 1. Install Soroban CLI
 ```bash
-cargo install soroban-cli
+git clone https://github.com/your-username/onchain-todo
+cd onchain-todo
+```
 
-Address:  aa411c31cb008f55e80a5283ffca364692be223cd32b4a2e278f4e001d9c39ef
+---
 
+### 2. Install dependencies
+
+```bash
+npm install
+```
+
+---
+
+### 3. Start the app
+
+```bash
+npm run dev
+```
+
+Open:
+
+```
+http://localhost:5173
+```
+
+---
+
+## 🔐 Wallet Setup
+
+1. Install Freighter Wallet
+2. Switch to **Testnet**
+3. Fund your wallet via Friendbot
+4. Approve connection when prompted
+
+---
+
+## 🧪 How It Works
+
+1. User enters a task
+2. Freighter prompts transaction signing
+3. Task is stored on-chain
+4. UI fetches and displays updated tasks
+
+---
+
+## ⚠️ Important Notes
+
+* Ensure correct **Contract ID** is set in frontend
+* Wallet must be on **Testnet**
+* Transactions require signing via Freighter
+
+---
+
+## 🌟 Future Improvements
+
+* 🗑️ Delete task functionality
+* 🏷️ Task categories/tags
+* 📱 Mobile optimization
+* 🔔 Notifications
+* 🔍 Search & filter
+
+---
+
+## 🤝 Contribution
+
+Feel free to fork, improve, and build on top of this project.
+
+---
+
+## 📜 License
+
+MIT License
+
+---
+
+## 💡 Inspiration
+
+Built with the idea that:
+
+> “Productivity tools shouldn’t need permission.”
+
+---
+
+## 👨‍💻 Author
+
+**Amitabh Dey**
+
+---
+
+🚀 If you liked this project, consider starring the repo!
